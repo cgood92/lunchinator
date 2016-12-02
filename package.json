@@ -1,0 +1,19 @@
+{
+  "name": "lunchinator",
+  "version": "1.0.0",
+  "description": "Spend too much time deciding where to go eat? This app, built to the specifications of an interview code challenge by ICS, will help you decide.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgood92/lunchinator.git"
+  },
+  "author": "Clint Goodman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cgood92/lunchinator/issues"
+  },
+  "homepage": "https://github.com/cgood92/lunchinator#readme"
+}
