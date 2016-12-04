@@ -25,6 +25,18 @@ describe('Testing v1', () => {
 					done();
 				}).auth(authUser, authPassword);
 			});
+
+			it('Fetching restaurants with non-admin user (should forbid)', (done) => {
+				request.get({
+					url: `${baseUrl}/api/restaurants`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(ok(response)).equal(false);
+
+					done();
+				}).auth('george', 'password6');
+			});
 		});
 
 		describe('Testing endpoint POST /api/restaurants', () => {
