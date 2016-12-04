@@ -1,3 +1,21 @@
 'use strict';
 
-module.exports = {};
+const shouldEventClose = (event, time) => {
+
+};
+
+const hasEventClosed = (event) => {
+
+};
+
+const closeEvent = (event) => {
+
+};
+
+const cycleEvents = () => {
+
+};
+
+module.exports = {
+	cycleEvents
+};

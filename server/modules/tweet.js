@@ -1,3 +1,9 @@
 'use strict';
 
-module.exports = {};
+const postToTwitter = () => {};
+
+const send = (group, msg) => {};
+
+module.exports = {
+	send
+};

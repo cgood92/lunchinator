@@ -1,8 +1,8 @@
-UserID,Password
-amber,password0
-brian,password1
-carl,password2
-david,password3
+UserID,Password,IsAdmin
+amber,password0,ADMIN
+brian,password1,ADMIN
+carl,password2,ADMIN
+david,password3,ADMIN
 edward,password4
 frank,password5
 george,password6

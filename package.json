@@ -4,7 +4,8 @@
   "description": "Spend too much time deciding where to go eat? This app, built to the specifications of an interview code challenge by ICS, will help you decide.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index",
+    "test": "mocha tests --timeout 4000 --recursive --ignore-leaks"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,21 @@
   "bugs": {
     "url": "https://github.com/cgood92/lunchinator/issues"
   },
-  "homepage": "https://github.com/cgood92/lunchinator#readme"
+  "homepage": "https://github.com/cgood92/lunchinator#readme",
+  "dependencies": {
+    "bcrypt": "^0.8.7",
+    "boom": "^4.2.0",
+    "csvtojson": "^1.0.3",
+    "hapi": "^16.0.1",
+    "hapi-auth-basic": "^4.2.0",
+    "hapi-authorization": "^3.0.2",
+    "hapi-swagger": "^7.4.0",
+    "inert": "^4.0.3",
+    "joi": "^10.0.2",
+    "mocha": "^3.2.0",
+    "request": "^2.79.0",
+    "require-directory": "^2.1.1",
+    "should": "^11.1.1",
+    "vision": "^4.1.1"
+  }
 }
