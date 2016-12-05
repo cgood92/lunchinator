@@ -80,11 +80,10 @@ describe('Testing the local database', () => {
 				return done();
 			});
 		});
-		it('Nothing to update', (done) => {
-			const updatedRestaurant = {};
-			db.update('restaurants').by({id: 0}).data(updatedRestaurant).then((data) => {
+		it('Updating with nothing (will clear all nodes except ID)', (done) => {
+			db.update('restaurants').by({id: 0}).data({}).then((data) => {
 				const updated = data[0];
-				should.exist(updated.name);
+				should.not.exist(updated.name);
 				should(updated.id).equal(0);
 				return done();
 			});
@@ -101,17 +100,6 @@ describe('Testing the local database', () => {
 				return done();
 			});
 		});
-		it('Update multiple', (done) => {
-			const updatedRestaurant = {
-				isSlow: false,
-				id: 9999999999
-			};
-			db.update('restaurants').by().data(updatedRestaurant).then((data) => {
-				should(data.length).be.greaterThan(1);
-				should(data.every((item) => item.isSlow === false)).equal(true);
-				return done();
-			});
-		});
 		it('Update by a function', (done) => {
 			db.update('restaurants').by({id: 1}).data((data) => {
 				data.name += '(and appended title)';
@@ -120,6 +108,15 @@ describe('Testing the local database', () => {
 				const updated = data[0];
 				should(updated.name).not.equal('(and appended title)');
 				should(updated.name.indexOf('(and appended title)')).be.greaterThan(1);
+				return done();
+			});
+		});
+		it('Update multiple', (done) => {
+			db.update('restaurants').by().data((data) => {
+				return Object.assign(data, {isSlow: false});
+			}).then((data) => {
+				should(data.length).be.greaterThan(1);
+				should(data.every((item) => item.isSlow === false)).equal(true);
 				return done();
 			});
 		});

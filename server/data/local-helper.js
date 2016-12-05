@@ -65,10 +65,11 @@ const update = (entity, qualifiers, data) => {
 			entries = entries.map((entry) => {
 				const { id } = entry;
 				if (typeof data === 'function') {
-					// Overwrite entry props with data props, and id shouldn't be overwritten
-					return Object.assign(entry, data(entry), {id});
+					// Let passed in function take care of what to replace
+					return Object.assign(data(entry), {id});
 				} else {
-					// Overwrite entry props with data props, and id shouldn't be overwritten
+					/* This peice was driving me a little crazy.  Originally, I had this as Object.assign(entry, data, {id}), and it was working fine.  Then, I decided I wanted the update (with data that is not a function) to replace the whole node, and node keep any original properties.  In order to have things work with value by references (updating the `local` object), the followig line is necessary... */
+					Object.keys(entry).forEach((key) => delete entry[key]);
 					return Object.assign(entry, data, {id});
 				}
 			});
