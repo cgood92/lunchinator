@@ -1,5 +1,6 @@
 const should = require('should'),
-	request = require('request');
+	request = require('request'),
+	server = require('../../index');
 
 const ok = (response) => {
 	return response.statusCode == 200;
@@ -7,7 +8,7 @@ const ok = (response) => {
 
 const authUser = 'amber',
 	authPassword = 'password0',
-	baseUrl = 'http://localhost:3000';
+	baseUrl = 'http://localhost:9999';
 
 describe('Testing v1', () => {
 	describe('Testing the endpoints', () => {
