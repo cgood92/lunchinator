@@ -52,7 +52,10 @@ const insert = (entity, ignoreThisParam, data) => {
 	});
 };
 
-// Returns the nodes that were updated
+/* 
+	Returns the nodes that were updated
+	Note: data can be either actual data, or it can be a function, which accepts the data object as a parameter, and updates by what is returned from that function.
+*/
 const update = (entity, qualifiers, data) => {
 	return new Promise((resolve, reject) => {
 		let branch = local[entity],
@@ -61,8 +64,13 @@ const update = (entity, qualifiers, data) => {
 		if (entries) {
 			entries = entries.map((entry) => {
 				const { id } = entry;
-				// Overwrite entry props with data props, and id shouldn't be overwritten
-				return Object.assign(entry, data, {id});
+				if (typeof data === 'function') {
+					// Overwrite entry props with data props, and id shouldn't be overwritten
+					return Object.assign(entry, data(entry), {id});
+				} else {
+					// Overwrite entry props with data props, and id shouldn't be overwritten
+					return Object.assign(entry, data, {id});
+				}
 			});
 			return resolve(immutability(entries));
 		} 

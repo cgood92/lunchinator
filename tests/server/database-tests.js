@@ -112,6 +112,17 @@ describe('Testing the local database', () => {
 				return done();
 			});
 		});
+		it('Update by a function', (done) => {
+			db.update('restaurants').by({id: 1}).data((data) => {
+				data.name += '(and appended title)';
+				return data;
+			}).then((data) => {
+				const updated = data[0];
+				should(updated.name).not.equal('(and appended title)');
+				should(updated.name.indexOf('(and appended title)')).be.greaterThan(1);
+				return done();
+			});
+		});
 	});
 	describe('Testing SELECT', () => {
 		it('Basic', (done) => {
