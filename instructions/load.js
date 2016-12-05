@@ -37,7 +37,9 @@ const loadRestaurants = () => {
 		Promise.all(result.map((restaurant) => {
 			return new Promise((resolve, reject) => {
 				db.insert('restaurants').data({
-					name: restaurant.name
+					name: restaurant.name,
+					isSlow: restaurant.isSlow || false,
+					daysAgo: restaurant.daysAgo || 0
 				}).then(() => {
 					resolve();
 				});
