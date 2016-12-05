@@ -50,45 +50,7 @@ const validateBasic = (req, username, password, cb) => {
 	});
 };
 
-const isAdmin = (username) => {
-	return new Promise((resolve, reject) => {
-		db.select('user').by({username}).then((user) => {
-			if (user && user.admin) {
-				return resolve(true);
-			}
-			return resolve(false);
-		});
-	});
-};
-
-const validateRole = (req, username, password, cb) => {
-	console.log('Got here...');
-	isAdmin(username).then((isAdmin) => {
-		let isValid = false,
-			userExposed;
-
-		if (isAdmin) {
-			isValid = true;
-			userExposed = {
-				role: 'ADMIN'
-			};
-		}
-		
-		cb(null, isValid, userExposed);
-	});
-};
-
-const validateRolePlugin =  {
-	register: hapiAuthorization,
-	options: {
-		roles: ['ADMIN']
-	}
-};
-
 module.exports = {
 	getUser,
-	isAdmin,
-	validateBasic,
-	validateRolePlugin,
-	validateRole
+	validateBasic
 };
