@@ -2,10 +2,6 @@ const should = require('should'),
 	request = require('request'),
 	server = require('../../index');
 
-const ok = (response) => {
-	return response.statusCode == 200;
-};
-
 const authUser = 'amber',
 	authPassword = 'password0',
 	baseUrl = 'http://localhost:9999';
@@ -20,7 +16,7 @@ describe('Testing v1', () => {
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should(body.length).greaterThan(1);
 
 					done();
@@ -33,7 +29,7 @@ describe('Testing v1', () => {
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(false);
+					should(response.statusCode).not.equal(200);
 
 					done();
 				}).auth('george', 'password6');
@@ -51,7 +47,7 @@ describe('Testing v1', () => {
 					formData
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should(body.name).equal(formData.name);
 					should.exist(body.id);
 
@@ -71,7 +67,7 @@ describe('Testing v1', () => {
 					formData
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should(body.name).equal(formData.name);
 					should(body.id).should.not.equal(formData.id);
 
@@ -91,7 +87,7 @@ describe('Testing v1', () => {
 					formData
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should(body.name).equal(formData.name);
 
 					done();
@@ -104,7 +100,7 @@ describe('Testing v1', () => {
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should(body.name).equal('Cool new name');
 
 					done();
@@ -122,7 +118,7 @@ describe('Testing v1', () => {
 					formData
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should(body.name).equal(formData.name);
 					should(body.id).should.not.equal(formData.id);
 
@@ -140,7 +136,7 @@ describe('Testing v1', () => {
 					json: true,
 					formData
 				}, (err, response, body) => {
-					should(ok(response)).equal(false);
+					should(response.statusCode).not.equal(200);
 
 					done();
 				}).auth(authUser, authPassword);
@@ -149,12 +145,12 @@ describe('Testing v1', () => {
 
 		describe('Testing endpoint GET /api/restaurants/{id}', () => {
 			it('Fetching a restaurant', (done) => {
-				request.put({
-					url: `${baseUrl}/api/restaurants/3`,
+				request.get({
+					url: `${baseUrl}/api/restaurants/1`,
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should.exist(body.name);
 					should.exist(body.id);
 
@@ -163,11 +159,11 @@ describe('Testing v1', () => {
 			});
 
 			it('Fetching a restaurant that does not exist', (done) => {
-				request.put({
+				request.get({
 					url: `${baseUrl}/api/restaurants/9999999999999`,
 					json: true
 				}, (err, response, body) => {
-					should(ok(response)).equal(false);
+					should(response.statusCode).not.equal(200);
 
 					done();
 				}).auth(authUser, authPassword);
@@ -181,7 +177,7 @@ describe('Testing v1', () => {
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(true);
+					should(response.statusCode).equal(200);
 					should.not.exist(body);
 
 					done();
@@ -194,7 +190,7 @@ describe('Testing v1', () => {
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(false);
+					should(response.statusCode).not.equal(200);
 
 					done();
 				}).auth(authUser, authPassword);
@@ -206,12 +202,104 @@ describe('Testing v1', () => {
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
-					should(ok(response)).equal(false);
+					should(response.statusCode).not.equal(200);
 
 					done();
 				}).auth(authUser, authPassword);
 			});
 		});
 
+		describe('Testing endpoint GET /api/ballot', () => {
+			let firstResponse;
+			it('Getting a ballot', (done) => {
+				request.get({
+					url: `${baseUrl}/api/ballot`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(200);
+					should(body.length).equal(5);
+					firstResponse = body;
+					done();
+				}).auth(authUser, authPassword);
+			});
+			it('Getting a second ballot, should not be same order as first', (done) => {
+				request.get({
+					url: `${baseUrl}/api/ballot`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(200);
+					should(body.length).equal(5);
+					should(JSON.stringify(body)).not.equal(JSON.stringify(firstResponse));
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+			// TODO
+			it('Getting a ballot after deadline has passed', (done) => {
+				request.get({
+					url: `${baseUrl}/api/ballot`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(409);
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+		});
+		describe('Testing endpoint POST /api/ballot', () => {
+			it('Posting a new ballot', (done) => {
+				request.post({
+					url: `${baseUrl}/api/vote?id=8`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should.not.exist(body);
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+			it('Posting a new ballot after deadline has passed', (done) => {
+				request.post({
+					url: `${baseUrl}/api/vote?id=8`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(409);
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+		});
+		describe('Testing endpoint POST /api/voting-closes', () => {
+			it('Setting a new closing deadline', (done) => {
+				request.post({
+					url: `${baseUrl}/api/voting-closes?time=0100`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(200);
+					should.not.exist(body);
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+		});
+		describe('Testing endpoint POST /api/tomorrow', () => {
+			it('Resetting votes/ballots', (done) => {
+				request.post({
+					url: `${baseUrl}/api/tomorrow`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(200);
+					should.not.exist(body);
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+		});
 	});
 });
