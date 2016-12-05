@@ -36,7 +36,7 @@ const updateById = (request, reply) => {
 
 const deleteById = (request, reply) => {
 	const { id } = request.params;
-	db.remove('restaurants').by({id}).then((data) => {
+	db.delete('restaurants').by({id}).then((data) => {
 		const restaurant = data[0];
 		if (restaurant) {
 			return reply();

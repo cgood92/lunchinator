@@ -19,7 +19,7 @@ const by = (action, entity) => {
 		switch (action) {
 			// No more further digging
 			case 'select':
-			case 'remove':
+			case 'delete':
 				return data(action, entity, qualifiers)();
 
 			// Need more data
@@ -56,10 +56,10 @@ const update = (entity) => {
 	return action('update', entity);
 };
 
-const remove = (entity) => {
-	return action('remove', entity);
+const deleteFunction = (entity) => {
+	return action('delete', entity);
 };
 
 module.exports = {
-	select, insert, update,remove 
+	select, insert, update, 'delete': deleteFunction
 };

@@ -71,7 +71,7 @@ const update = (entity, qualifiers, data) => {
 };
 
 // Returns the nodes that were deleted
-const remove = (entity, qualifiers, data) => {
+const deleteFunction = (entity, qualifiers, data) => {
 	return new Promise((resolve, reject) => {
 		let branch = local[entity],
 			entries = findByQualifier(branch, qualifiers);
@@ -92,5 +92,5 @@ const remove = (entity, qualifiers, data) => {
 };
 
 module.exports = {
-	select, insert, update, remove
+	select, insert, update, 'delete': deleteFunction
 };
