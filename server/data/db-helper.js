@@ -5,7 +5,7 @@ This can be replaced, swapped in and out for whatever database you want to conne
 
 For this example, our database will be called "local", since it's stored locally
 */
-const localDB = require('./local-helper');
+let localDB = require('./local-helper');
 
 // What gets returned here will be a promise
 const data = (action, entity, qualifiers) => {

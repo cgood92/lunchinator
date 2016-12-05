@@ -1,6 +1,6 @@
 'use strict';
 
-const local = require('./local');
+let local = require('./local');
 
 // Data from db should NEVER be changed by code, except by calling an interface here
 const immutability = (data) => JSON.parse(JSON.stringify(data));
