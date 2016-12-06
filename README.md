@@ -6,4 +6,12 @@ If I wasn't building to these specific specifications, then I may have built sev
 
 Please view this respository as a good example of my coding skills and practices.
 
+## To run
+
+First, create the file `/server/modules/twitterCreds.json`, and save your own Twitter credentials here.  Then, run the command: 
+
+```
+npm start
+```
+
 -- Clint Goodman
