@@ -212,15 +212,21 @@ describe('Testing v1', () => {
 		describe('Testing endpoint GET /api/ballot', () => {
 			let firstResponse;
 			it('Getting a ballot', (done) => {
-				request.get({
-					url: `${baseUrl}/api/ballot`,
+				// Setting deadline time to be after 11pm, for the sake of testing a submission (assuming we want to test this even if it's after 11:45am)
+				request.post({
+					url: `${baseUrl}/api/voting-closes?time=2399`,
 					json: true
 				}, (err, response, body) => {
-					should.not.exist(err);
-					should(response.statusCode).equal(200);
-					should(body.length).equal(5);
-					firstResponse = body;
-					done();
+					request.get({
+						url: `${baseUrl}/api/ballot`,
+						json: true
+					}, (err, response, body) => {
+						should.not.exist(err);
+						should(response.statusCode).equal(200);
+						should(body.length).equal(5);
+						firstResponse = body;
+						done();
+					}).auth(authUser, authPassword);
 				}).auth(authUser, authPassword);
 			});
 			it('Getting a second ballot, should not be same order as first', (done) => {
@@ -236,38 +242,61 @@ describe('Testing v1', () => {
 					done();
 				}).auth(authUser, authPassword);
 			});
-			// TODO
 			it('Getting a ballot after deadline has passed', (done) => {
-				request.get({
-					url: `${baseUrl}/api/ballot`,
+				// Setting the deadline to be certainly closed, assuming we're testing this after 12:01 am
+				request.post({
+					url: `${baseUrl}/api/voting-closes?time=0001`,
 					json: true
-				}, (err, response, body) => {
-					should.not.exist(err);
-					should(response.statusCode).equal(409);
+				}, () => {
+					request.get({
+						url: `${baseUrl}/api/ballot`,
+						json: true
+					}, (err, response, body) => {
+						should.not.exist(err);
+						should(response.statusCode).equal(409);
 
-					done();
+						done();
+					}).auth(authUser, authPassword);
 				}).auth(authUser, authPassword);
 			});
 		});
-		describe('Testing endpoint POST /api/ballot', () => {
-			it('Posting a new ballot', (done) => {
-				request.post({
-					url: `${baseUrl}/api/vote?id=8`,
-					json: true
-				}, (err, response, body) => {
-					should.not.exist(err);
-					should.not.exist(body);
-
-					done();
-				}).auth(authUser, authPassword);
-			});
-			it('Posting a new ballot after deadline has passed', (done) => {
+		describe('Testing endpoint POST /api/vote', () => {
+			// Deadline was closed in an earlier test
+			it('Posting a new vote after deadline has passed', (done) => {
 				request.post({
 					url: `${baseUrl}/api/vote?id=8`,
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
 					should(response.statusCode).equal(409);
+
+					done();
+				}).auth(authUser, authPassword);
+			});
+			it('Posting a new vote', (done) => {
+				// Reset back so that we can submit votes
+				request.post({
+					url: `${baseUrl}/api/voting-closes?time=2399`,
+					json: true
+				}, () => {
+					request.post({
+						url: `${baseUrl}/api/vote?id=8`,
+						json: true
+					}, (err, response, body) => {
+						should.not.exist(err);
+						should.not.exist(body);
+
+						done();
+					}).auth(authUser, authPassword);
+				}).auth(authUser, authPassword);
+			});
+			it('Post a new vote with a 1:00pm meeting', (done) => {
+				request.post({
+					url: `${baseUrl}/api/vote?id=2&onePmMeeting=true`,
+					json: true
+				}, (err, response, body) => {
+					should.not.exist(err);
+					should(response.statusCode).equal(200);
 
 					done();
 				}).auth(authUser, authPassword);
@@ -276,7 +305,7 @@ describe('Testing v1', () => {
 		describe('Testing endpoint POST /api/voting-closes', () => {
 			it('Setting a new closing deadline', (done) => {
 				request.post({
-					url: `${baseUrl}/api/voting-closes?time=0100`,
+					url: `${baseUrl}/api/voting-closes?time=0001`,
 					json: true
 				}, (err, response, body) => {
 					should.not.exist(err);
