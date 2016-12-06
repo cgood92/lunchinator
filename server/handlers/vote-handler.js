@@ -13,22 +13,32 @@ const submit = (request, reply) => {
 		if (ballot && ballot.deadlineTime && now24 >= ballot.deadlineTime) {
 			return reply(boom.conflict());
 		} else {
-			db.insert('votes').data({
+			const voteToInsert = {
 				restaurantId: id,
 				onePmMeeting,
 				date: now,
 				ballotId: ballot.id,
-				userId: null
-			}).then((data) => {
-				if (onePmMeeting == true) {
-					db.update('ballots').by({id: ballot.id}).data((data) => {
-						return Object.assign(data, { onePmMeeting: true });
-					}).then(() => {
-						return reply();
-					});
-				} else {
-					return reply();
+				userId: request.auth.credentials.id
+			};
+			// Check to see if a vote by this user for this ballot already exists
+			db.select('votes').by({ballotId: voteToInsert.ballotId, userId: voteToInsert.userId}).then(([vote]) => {
+				let promise;
+				// If user has already voted, update
+				if (vote) {
+					promise = db.update('votes').by({id: vote.id}).data(voteToInsert);
 				}
+				// Or create a new vote
+				else {
+					promise = db.insert('votes').data(voteToInsert);
+				}
+				return promise.then((data) => {
+						// Since the user may not longer have a 1:00pm meeting ANYMORE, take that into account
+						db.update('ballots').by({id: ballot.id}).data((data) => {
+							return Object.assign(data, { onePmMeeting: (onePmMeeting == true) });
+						}).then(() => {
+							return reply();
+						});
+					});
 			});
 		}
 	});
