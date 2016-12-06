@@ -13,9 +13,12 @@ const generateList = (limit, slowNumberAllowed) => {
 
 			for (let randArray = perm.shuffle(data), i = randArray.length - 1; i >= 0 && list.length < limit; i--){
 				const restaurant = randArray[i];
-				if (restaurant.isSlow && slowNumberCount <= slowNumberAllowed) {
-					continue;
-				}
+				if (restaurant.isSlow) {
+					if (slowNumberCount <= slowNumberAllowed) {
+						continue;
+					}
+					slowNumberCount++;
+				}  
 				list.push(restaurant);
 			}
 

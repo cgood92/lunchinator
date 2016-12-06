@@ -227,6 +227,10 @@ describe('Testing v1', () => {
 						should.not.exist(err);
 						should(response.statusCode).equal(200);
 						should(body.length).equal(5);
+						// Shouldn't be more than 2 restaurants in this list that are "slow"
+						should(body.filter((restaurant) => restaurant.isSlow).length).not.be.greaterThan(2);
+
+						// For use to compare in test below
 						firstResponse = body;
 						done();
 					}).auth(authUser, authPassword);
