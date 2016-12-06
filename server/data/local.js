@@ -4,7 +4,6 @@ let restaurants = {},
 	users = {},
 	groups = {},
 	votes = {},
-	events = {},
 	ballots = {},
 	config = {
 		0: {
@@ -18,7 +17,6 @@ module.exports = {
 	users,
 	groups,
 	votes,
-	events,
 	ballots,
 	config
 };
