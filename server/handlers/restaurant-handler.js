@@ -11,8 +11,7 @@ const getAll = (request, reply) => {
 
 const getById = (request, reply) => {
 	const { id } = request.params;
-	db.select('restaurants').by({id}).then((data) => {
-		const restaurant = data[0];
+	db.select('restaurants').by({id}).then(([restaurant]) => {
 		if (restaurant) {
 			return reply(restaurant);
 		} else {
@@ -24,8 +23,7 @@ const getById = (request, reply) => {
 const updateById = (request, reply) => {
 	const { id } = request.params;
 	const payload = request.payload;
-	db.update('restaurants').by({id}).data(payload).then((data) => {
-		const restaurant = data[0];
+	db.update('restaurants').by({id}).data(payload).then(([restaurant]) => {
 		if (restaurant) {
 			return reply(restaurant);
 		} else {
@@ -36,8 +34,7 @@ const updateById = (request, reply) => {
 
 const deleteById = (request, reply) => {
 	const { id } = request.params;
-	db.delete('restaurants').by({id}).then((data) => {
-		const restaurant = data[0];
+	db.delete('restaurants').by({id}).then(([restaurant]) => {
 		if (restaurant) {
 			return reply();
 		} else {
