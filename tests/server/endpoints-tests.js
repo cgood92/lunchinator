@@ -11,16 +11,19 @@ describe('Testing v1', () => {
 
 		describe('Testing endpoint GET /api/restaurants', () => {
 			it('Fetching restaurants', (done) => {
-				request.get({
-					url: `${baseUrl}/api/restaurants`,
-					json: true
-				}, (err, response, body) => {
-					should.not.exist(err);
-					should(response.statusCode).equal(200);
-					should(body.length).greaterThan(1);
+				// Don't start testing this first test until server has been loaded fully.  Only necessay once
+				server.then(() => {
+					request.get({
+						url: `${baseUrl}/api/restaurants`,
+						json: true
+					}, (err, response, body) => {
+						should.not.exist(err);
+						should(response.statusCode).equal(200);
+						should(body.length).greaterThan(1);
 
-					done();
-				}).auth(authUser, authPassword);
+						done();
+					}).auth(authUser, authPassword);
+				});
 			});
 
 			it('Fetching restaurants with non-admin user (should forbid)', (done) => {
