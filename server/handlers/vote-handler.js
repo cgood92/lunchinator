@@ -10,6 +10,7 @@ const submit = (request, reply) => {
 		{ id, onePmMeeting } = request.query;
 	// Get the ballot to see what time it closes
 	db.select('ballots').by({date: now}).then(([ballot]) => {
+		// If it's closed already
 		if (ballot && ballot.deadlineTime && now24 >= ballot.deadlineTime) {
 			return reply(boom.conflict());
 		} else {

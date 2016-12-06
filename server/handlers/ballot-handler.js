@@ -5,20 +5,23 @@ const db = require('../data/db-helper'),
 	moment = require('moment'),
 	perm = require('array-permutation');
 
+// Generates a random list of restaurants from the database
 const generateList = (limit, slowNumberAllowed) => {
 	return new Promise((resolve, reject) => {
+		// Get all the restaurants
 		db.select('restaurants').by().then((data) => {
 			let slowNumberCount = 0,
 				list = [];
-
+			// Shuffle the array of restuarants, and loop through them until `list` is filled to `limit`
 			for (let randArray = perm.shuffle(data), i = randArray.length - 1; i >= 0 && list.length < limit; i--){
 				const restaurant = randArray[i];
 				if (restaurant.isSlow) {
+					// If we have reached the amount of slow restaurants allowed, then skip iteration
 					if (slowNumberCount <= slowNumberAllowed) {
 						continue;
 					}
 					slowNumberCount++;
-				}  
+				} 
 				list.push(restaurant);
 			}
 
@@ -30,15 +33,20 @@ const generateList = (limit, slowNumberAllowed) => {
 const get = (request, reply) => {
 	const now = moment().format("YYYY-MM-DD"),
 		now24 = moment().format("HHmm");
-	db.select('ballots').by({date: now}).then((data) => {
-		if (data && data.length) {
+	// Get the ballot for today, if it's already been created, from db
+	db.select('ballots').by({date: now}).then(([ballot]) => {
+		// Ballot already created
+		if (ballot) {
 			// Too late
-			if (now24 >= data[0].deadlineTime) {
+			if (now24 >= ballot.deadlineTime) {
 				return reply(boom.conflict());
 			} else {
-				return reply(perm.shuffle(data[0].list));
+				// Shuffle the list again
+				return reply(perm.shuffle(ballot.list));
 			}
-		} else {
+		}
+		// Ballot has not been created yet, so create it
+		else {
 			db.select('config').by().then(([config]) => {
 				// Too late
 				if (config.deadlineTime && now24 >= config.deadlineTime) {
@@ -63,13 +71,16 @@ const get = (request, reply) => {
 	});
 };
 
+// Set a new time to close poll
 const setCloseTime = (request, reply) => {
 	const { time } = request.query,
 		now = moment().format("YYYY-MM-DD");
+	// Update global config
 	db.update('config').by().data((data) => {
 		return Object.assign(data, {deadlineTime: time});
 	}).then((data) => {
-		db.update('ballots').by({date: now}).data((data) => {
+		// Update all the ballots
+		db.update('ballots').by({date: now, closed: false}).data((data) => {
 			return Object.assign(data, { deadlineTime: time });
 		}).then(() => {
 			return reply();
@@ -77,6 +88,7 @@ const setCloseTime = (request, reply) => {
 	});
 };
 
+// Deletes all the ballots and votes created for today
 const resetToday = (request, reply) => {
 	const now = moment().format("YYYY-MM-DD");
 	Promise.all([

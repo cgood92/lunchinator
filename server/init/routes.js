@@ -5,6 +5,7 @@ const joi = require('joi'),
 
 const base = '/api';
 
+// Generates routes
 const makeRoute = (method, path, version, config) => {
 	config.tags = ['api'];
 	return {

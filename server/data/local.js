@@ -2,11 +2,13 @@
 
 let restaurants = {},
 	users = {},
+	// Not used yet
 	groups = {},
 	votes = {},
 	ballots = {},
 	config = {
 		0: {
+			// Default deadline time: 11:45am
 			deadlineTime: '1145',
 			id: 0
 		}

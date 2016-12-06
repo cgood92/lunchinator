@@ -5,6 +5,7 @@ const schedule = require('node-schedule'),
 	moment = require('moment'),
 	db = require('../data/db-helper');
 
+// Schedule a job for every minute of the day
 const scheduleJob = () => {
 	schedule.scheduleJob('*/2 * * * *', () => {
 		cycleEvents();
@@ -22,7 +23,7 @@ const decideRestaurant = (votes = []) => {
 		acc[restaurantId] = (acc[restaurantId]) ? acc[restaurantId]+1 : 1;
 		return acc;
 	}, {});
-	// Find the highest restaurant vote
+	// Find the highest restaurant vote (will return object with restaurantId and the amount of votes for that restuarantId)
 	const highest = Object.keys(map).reduce((highest, restaurantId) => {
 		if (map[restaurantId] > highest.count) {
 			return {
@@ -36,6 +37,7 @@ const decideRestaurant = (votes = []) => {
 	return db.select('restaurants').by({id: highest.restaurantId});
 };
 
+// Close the ballot, and send a tweet
 const closeBallot = (ballot) => {
 	return new Promise((resolve, reject) => {
 		db.select('votes').by({ballotId: ballot.id}).then((votes) => {
@@ -55,6 +57,7 @@ const closeBallot = (ballot) => {
 				else {
 					messages.push('Good luck with lunch today.');
 				}
+				// Close the ballot
 				db.update('ballots').by({id: ballot.id}).data((data) => {
 					return Object.assign(data, {closed: true});
 				}).then(() => {
@@ -65,10 +68,12 @@ const closeBallot = (ballot) => {
 	});
 };
 
+// Returns a promise, which will resolve to all the tweet messages sent
 const cycleEvents = () => {
 	return new Promise((resolve, reject) => {
 		const now = moment().format("YYYY-MM-DD"),
 			now24 = moment().format("HHmm");
+		// Go through all the open ballots for today, and see if we should close them (past the deadline)
 		db.select('ballots').by({closed: false, date: now}).then((ballots) => {
 			Promise.all(
 				ballots

@@ -4,6 +4,7 @@ const hapiAuthorization = require('hapi-authorization'),
 	db = require('../data/db-helper'),
 	bcrypt = require('bcrypt');
 
+// Gets a user from DB by username
 const getUser = (username) => {
 	return new Promise((resolve, reject) => {
 		if (username === undefined || username === null) {
@@ -23,6 +24,7 @@ const badAttempt = (username) => {
 	console.log(`User '${username}' was rejected access...`);
 };
 
+// Validation function for HTTP basic auth
 const validateBasic = (req, username, password, cb) => {
 	getUser(username).then((user) => {
 		// No user - bad attempt

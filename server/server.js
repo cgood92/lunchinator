@@ -9,12 +9,13 @@ const Hapi = require('hapi'),
 	BasicAuth = require('hapi-auth-basic'),
 	load = require('../instructions/load');
 
-
+// This promise will resolve when server is started and database loaded
 const start = (host, port) => {
 	return new Promise((resolve, reject) => {
 		const server = new Hapi.Server();
 		server.connection({host,port});
 
+		// Setup swagger
 		const swaggerPlugin = {
 			register: HapiSwagger,
 			options: {
@@ -36,7 +37,9 @@ const start = (host, port) => {
 					reject(err);
 				} else {
 					console.log(`Server running at: ${server.info.uri}`);
+					// Init routes
 					server.route(routes.v1());
+					// Load the database
 					Promise.all([
 						load.loadUsers(),
 						load.loadRestaurants()

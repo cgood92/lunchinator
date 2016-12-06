@@ -7,13 +7,14 @@ For this example, our database will be called "local", since it's stored locally
 */
 let localDB = require('./local-helper');
 
-// What gets returned here will be a promise
+// returns a promise
 const data = (action, entity, qualifiers) => {
 	return (data) => {
 		return localDB[action](entity, qualifiers, data);
 	};
 };
 
+// Qualifiers is an object, and will be used similar to a 'query by example' method.  Returned results will be the results that have properties that match all the properties of the qualifier object
 const by = (action, entity) => {
 	return (qualifiers) => {
 		switch (action) {
@@ -56,6 +57,7 @@ const update = (entity) => {
 	return action('update', entity);
 };
 
+// delete is reserved keyword
 const deleteFunction = (entity) => {
 	return action('delete', entity);
 };
