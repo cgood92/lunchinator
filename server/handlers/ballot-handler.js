@@ -50,7 +50,8 @@ const get = (request, reply) => {
 							list,
 							date: now,
 							deadlineTime: config.deadlineTime,
-							onePmMeeting: false
+							onePmMeeting: false,
+							closed: false
 						};
 						db.insert('ballots').data(ballot).then((data) => {
 							return reply(data.list);
