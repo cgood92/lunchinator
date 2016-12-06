@@ -32,5 +32,7 @@ You can go to your browser at [http://localhost:3000](http://localhost:3000), or
         | -> Initializes routes
           | -> Routes correspond to handlers
 
+## Screenshot
+![Demo](assets/demo.png "Demo")
 
 -- Clint Goodman
