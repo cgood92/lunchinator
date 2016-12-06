@@ -11,7 +11,26 @@ Please view this respository as a good example of my coding skills and practices
 First, create the file `/server/modules/twitterCreds.json`, and save your own Twitter credentials here.  Then, run the command: 
 
 ```
+# node version needs to be 6.1+
+node -v
+
+# Run tests
+npm test
+
+# Run server
 npm start
 ```
+
+You can go to your browser at [http://localhost:3000](http://localhost:3000), or ping the routes externally with the base URL: http://localhost:3000/api.
+
+## Project structure
+
+    server.js
+      |-> Cron job
+      |-> Hapi server with Swagger plugin
+        | -> Creates a UI (available at: http://localhost:3000)
+        | -> Initializes routes
+          | -> Routes correspond to handlers
+
 
 -- Clint Goodman

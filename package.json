@@ -11,6 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/cgood92/lunchinator.git"
   },
+  "engine": "node 6.7.0",
   "author": "Clint Goodman",
   "license": "ISC",
   "bugs": {
