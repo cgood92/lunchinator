@@ -5,7 +5,13 @@ let restaurants = {},
 	groups = {},
 	votes = {},
 	events = {},
-	ballots = {};
+	ballots = {},
+	config = {
+		0: {
+			deadlineTime: '1145',
+			id: 0
+		}
+	};
 
 module.exports = {
 	restaurants,
@@ -13,5 +19,6 @@ module.exports = {
 	groups,
 	votes,
 	events,
-	ballots
+	ballots,
+	config
 };

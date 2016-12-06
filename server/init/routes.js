@@ -19,14 +19,14 @@ const v1 = () => {
 	const version = '';
 	return [
 		makeRoute('GET', '/restaurants', version, {
-			handler: handlers.restaurants.getAll,
+			handler: handlers.restaurant.getAll,
 			description: 'Gets all restaurants',
 			auth: {
 				scope: ['ADMIN']
 			}
 		}),
 		makeRoute('GET', '/restaurants/{id}', version, {
-			handler: handlers.restaurants.getById,
+			handler: handlers.restaurant.getById,
 			description: 'Gets restaurant by id',
 			auth: {
 				scope: ['ADMIN']
@@ -38,7 +38,7 @@ const v1 = () => {
 			}
 		}),
 		makeRoute('PUT', '/restaurants/{id}', version, {
-			handler: handlers.restaurants.updateById,
+			handler: handlers.restaurant.updateById,
 			description: 'Updates a restaurant by id',
 			auth: {
 				scope: ['ADMIN']
@@ -50,7 +50,7 @@ const v1 = () => {
 			}
 		}),
 		makeRoute('DELETE', '/restaurants/{id}', version, {
-			handler: handlers.restaurants.deleteById,
+			handler: handlers.restaurant.deleteById,
 			description: 'Deletes a restaurant by id',
 			auth: {
 				scope: ['ADMIN']
@@ -62,11 +62,38 @@ const v1 = () => {
 			}
 		}),
 		makeRoute('POST', '/restaurants', version, {
-			handler: handlers.restaurants.insert,
+			handler: handlers.restaurant.insert,
 			description: 'Inserts a new restaurant',
 			auth: {
 				scope: ['ADMIN']
 			}
+		}),
+		makeRoute('GET', '/ballot', version, {
+			handler: handlers.ballot.get,
+			description: 'Get\s a voting ballot'
+		}),
+		makeRoute('POST', '/vote', version, {
+			handler: handlers.vote.submit,
+			description: 'Post a vote',
+			validate: {
+				query: {
+					id: joi.number().integer().min(0).required().description('the id of the restaurant'),
+					onePmMeeting: joi.boolean().truthy(['true']).default(false).description('indicates if the user has a 1:00pm meeting or not')
+				}
+			}
+		}),
+		makeRoute('POST', '/voting-closes', version, {
+			handler: handlers.ballot.setCloseTime,
+			description: 'Change the voting close time',
+			validate: {
+				query: {
+					time: joi.required().description('24-hour time string (ie 1330)')
+				}
+			}
+		}),
+		makeRoute('POST', '/tomorrow', version, {
+			handler: handlers.ballot.resetToday,
+			description: 'Reset the voting for today'
 		})
 	];
 };
