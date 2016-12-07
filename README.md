@@ -32,7 +32,10 @@ You can go to your browser at [http://localhost:3000](http://localhost:3000), or
         | -> Initializes routes
           | -> Routes correspond to handlers
 
-## Screenshot
-![Demo](assets/demo.png "Demo")
+## Screenshots
+![Demo-1](assets/demo-1.png "Demo-1")
+![Demo-2](assets/demo-2.png "Demo-2")
+![Demo-3](assets/demo-3.png "Demo-3")
+![Demo-4](assets/demo-4.png "Demo-4")
 
 -- Clint Goodman
